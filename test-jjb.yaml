@@ -1,0 +1,39 @@
+- job-template:
+    id: ken-test
+    name: '{name}'
+    project-type: pipeline
+    jenkins-file: Jenkinsfile
+    branch: "**/develop/*"
+    pipeline-scm:
+      scm:
+        - git:
+           url: https://github.com/kentaroko/jenkins-test
+           branches:
+             - '{branch}'
+      script-path: '{jenkins-file}'
+
+    properties:
+      - github:
+          url: "https://github.com/kentaroko/jenkins-test/"
+    triggers:
+      - github
+    parameters:
+      - string:
+          name: buildNode
+          default: '{build-node}'
+          description: 'Pod management node'
+
+- project:
+    name: ken-jjb-test
+    jobs:
+      - 'ken-test':
+          name: 'ken-1'
+          build-node: 'ubuntu:16.04'
+      - 'ken-test':
+          name: 'ken-2'
+          build-node: 'ubuntu:18.04'
+      - 'ken-test':
+          name: 'ken-jjb'
+          build-node: 'ubuntu:18.04'
+          jenkins-file: Jenkinsfile.jjb
+          branch: 'origin/main'
