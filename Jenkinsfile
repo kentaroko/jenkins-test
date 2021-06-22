@@ -4,25 +4,22 @@ pipeline {
                   args '-u root:root -v $HOME/workspace/myproject:/myproject'
         }
     }
+    options {
+      skipDefaultCheckout(true)
+    }
     stages {
-       stage('Checkout SCM') {
-          steps {
-            checkout([
-              $class: 'GitSCM',
-              branches: [[name: "**" ]],
-              userRemoteConfigs: [[
-                url: 'https://github.com/hwchiu/jenkins-test.git',
-                credentialsId: '',
-              ]]
-             ])
-           }
+      stage('Checkout SCM') {
+        steps {
+          echo '> Checking out the source control ...'
+            checkout scm
         }
-        stage('Test') {
-            steps {
-                sh '''
-                echo "test testfasdfasdfsaf"
-                '''
-            }
+      }
+      stage('Test') {
+        steps {
+          sh '''
+            echo "test testfasdfasdfsaf"
+            '''
         }
+      }
     }
 }
